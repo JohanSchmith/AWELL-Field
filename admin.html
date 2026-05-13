@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Awell Admin</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue: #1169B0; --blue-lt: #B5D4F4; --blue-bg: #F0F4F9;
+  --dark: #1a1a1a; --muted: #666; --border: #C8D8EC;
+  --bg: #fff; --bg2: #f7f8fa; --r: 8px;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg2); color: var(--dark); font-size: 14px; }
+input, select, button { font-family: inherit; font-size: 14px; }
+input, select { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--r); background: var(--bg); color: var(--dark); }
+input:focus, select:focus { outline: none; border-color: var(--blue); }
+
+#login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #042C53, #1169B0); padding: 1.5rem; }
+.login-box { background: #fff; border-radius: 16px; padding: 2.5rem 2rem; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.login-logo { height: 72px; width: auto; border-radius: 8px; margin-bottom: 1.25rem; }
+.login-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.login-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
+.login-fg { text-align: left; margin-bottom: .5rem; }
+.login-fg label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+.btn-login { background: var(--blue); color: #fff; border: none; border-radius: var(--r); padding: 11px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; margin-top: .75rem; }
+.btn-login:hover { background: #0e52a0; }
+.login-err { color: #E24B4A; font-size: 13px; margin-top: 8px; min-height: 20px; font-weight: 600; }
+.login-back { display: block; margin-top: 1.25rem; font-size: 13px; color: var(--muted); text-decoration: none; }
+.login-back:hover { color: var(--blue); }
+
+#admin-app { display: none; min-height: 100vh; }
+.adm-hdr { background: var(--blue); padding: .75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.adm-hdr-l { display: flex; align-items: center; gap: 12px; }
+.adm-logo { height: 52px; width: auto; border-radius: 5px; }
+.adm-hdr-title { font-size: 20px; font-weight: 700; color: #fff; }
+.adm-hdr-r { display: flex; align-items: center; gap: 12px; }
+.adm-date { font-size: 12px; color: var(--blue-lt); }
+.btn-logout { background: rgba(255,255,255,.18); border: none; color: #fff; border-radius: var(--r); padding: 7px 14px; font-size: 13px; cursor: pointer; }
+.btn-logout:hover { background: rgba(255,255,255,.3); }
+
+.adm-stats { display: grid; grid-template-columns: repeat(4,1fr); background: var(--blue); padding: 0 1.5rem 1.25rem; gap: 10px; }
+.adm-stat { background: rgba(255,255,255,.12); border-radius: var(--r); padding: .75rem 1rem; text-align: center; }
+.adm-stat-n { font-size: 28px; font-weight: 700; color: #fff; }
+.adm-stat-l { font-size: 11px; color: var(--blue-lt); margin-top: 3px; }
+
+.adm-filters { padding: 1rem 1.5rem; background: var(--bg2); border-bottom: 1px solid var(--border); }
+.filter-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+.fg { display: flex; flex-direction: column; gap: 3px; }
+.fg label { font-size: 12px; color: var(--muted); }
+.btn-clear { background: none; border: 1px solid var(--border); border-radius: var(--r); padding: 8px 14px; cursor: pointer; color: var(--muted); white-space: nowrap; }
+.btn-clear:hover { background: var(--bg); }
+
+.adm-tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--bg2); padding: 0 1.5rem; }
+.adm-tab { padding: 10px 16px; font-size: 13px; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; color: var(--muted); font-family: inherit; }
+.adm-tab.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+
+.adm-toolbar { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1.5rem; border-bottom: 1px solid var(--border); }
+.adm-count { font-size: 13px; color: var(--muted); font-weight: 600; }
+.btn-csv { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); padding: 7px 14px; font-size: 13px; cursor: pointer; color: var(--dark); }
+.btn-csv:hover { background: var(--blue-bg); }
+
+.adm-table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { text-align: left; font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; padding: 8px 12px; border-bottom: 2px solid var(--border); background: var(--bg2); white-space: nowrap; cursor: pointer; user-select: none; }
+thead th:hover { color: var(--blue); }
+tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+tbody tr { cursor: pointer; }
+tbody tr:hover { background: var(--blue-bg); }
+.td-bold { font-weight: 700; }
+.chip { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 20px; display: inline-block; }
+.chip-active { background: #d4edda; color: #2d6a4f; }
+.chip-done { background: #e2e3e5; color: #555; }
+.adm-empty { text-align: center; color: var(--muted); padding: 3rem; font-size: 14px; }
+
+#detail-panel { position: fixed; right: 0; top: 0; bottom: 0; width: 380px; background: #fff; box-shadow: -4px 0 24px rgba(0,0,0,.12); z-index: 200; display: none; flex-direction: column; }
+#detail-panel.open { display: flex; }
+.det-hdr { background: var(--blue); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.det-hdr-title { font-size: 14px; font-weight: 700; color: #fff; flex: 1; }
+.btn-close { background: rgba(255,255,255,.2); border: none; color: #fff; border-radius: var(--r); padding: 4px 10px; cursor: pointer; font-size: 20px; line-height: 1; }
+.det-body { flex: 1; overflow-y: auto; padding: 1rem 1.25rem; }
+.sum-row { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+.sum-row:last-child { border-bottom: none; }
+.sum-lbl { color: var(--muted); flex-shrink: 0; }
+.det-actions { padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; border-top: 1px solid var(--border); }
+.btn-dl { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 10px; font-size: 13px; cursor: pointer; color: var(--dark); width: 100%; font-family: inherit; }
+.btn-dl:hover { background: var(--blue-bg); }
+
+@media (max-width:700px) {
+  .adm-stats { grid-template-columns: 1fr 1fr; }
+  #detail-panel { width: 100%; }
+  .filter-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <img src="logo.jpg" alt="Awell" class="login-logo" />
+    <div class="login-title">Admin</div>
+    <div class="login-sub">Kun for kontoret</div>
+    <div class="login-fg">
+      <label for="pw">Adgangskode</label>
+      <input type="password" id="pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()" autofocus />
+    </div>
+    <div class="login-err" id="login-err"></div>
+    <button class="btn-login" onclick="login()">Log ind</button>
+    <a href="/" class="login-back">← Tilbage til feltportal</a>
+  </div>
+</div>
+
+<div id="admin-app">
+  <div class="adm-hdr">
+    <div class="adm-hdr-l">
+      <img src="logo.jpg" alt="Awell" class="adm-logo" />
+      <span class="adm-hdr-title">Admin</span>
+    </div>
+    <div class="adm-hdr-r">
+      <span class="adm-date" id="adm-date"></span>
+      <button class="btn-logout" onclick="logout()">Log ud</button>
+    </div>
+  </div>
+
+  <div class="adm-stats">
+    <div class="adm-stat"><div class="adm-stat-n" id="s-tot">0</div><div class="adm-stat-l">Opgaver i alt</div></div>
+    <div class="adm-stat"><div class="adm-stat-n" id="s-pf">0</div><div class="adm-stat-l">Pumpeforsøg</div></div>
+    <div class="adm-stat"><div class="adm-stat-n" id="s-bg">0</div><div class="adm-stat-l">Besigtigelser</div></div>
+    <div class="adm-stat"><div class="adm-stat-n" id="s-mnd">0</div><div class="adm-stat-l">Denne måned</div></div>
+  </div>
+
+  <div class="adm-filters">
+    <div class="filter-row">
+      <div class="fg" style="flex:2;min-width:160px;"><label>Søg boring / sag / kunde</label><input type="text" id="f-s" placeholder="DGU 123.456 eller kundenavn..." oninput="filter()" /></div>
+      <div class="fg" style="flex:1;min-width:120px;"><label>Opgavetype</label>
+        <select id="f-t" onchange="filter()">
+          <option value="">Alle typer</option>
+          <option>Pumpeforsøg</option><option>Besigtigelse</option><option>Boreopgave</option>
+          <option>Service</option><option>Sløjfning</option><option>Tilstandsvurdering</option><option>Vandprøve</option>
+        </select>
+      </div>
+      <div class="fg" style="min-width:120px;"><label>Fra dato</label><input type="date" id="f-fra" onchange="filter()" /></div>
+      <div class="fg" style="min-width:120px;"><label>Til dato</label><input type="date" id="f-til" onchange="filter()" /></div>
+      <button class="btn-clear" onclick="clearF()">Ryd filtre</button>
+    </div>
+  </div>
+
+  <div class="adm-tabs">
+    <button class="adm-tab active" onclick="setTab('alle',this)">Alle</button>
+    <button class="adm-tab" onclick="setTab('pumpeforsog',this)">Pumpeforsøg</button>
+    <button class="adm-tab" onclick="setTab('besigtigelse',this)">Besigtigelse</button>
+    <button class="adm-tab" onclick="setTab('andre',this)">Andre</button>
+  </div>
+
+  <div class="adm-toolbar">
+    <span class="adm-count" id="adm-cnt">0 opgaver</span>
+    <button class="btn-csv" onclick="csvAll()">Download CSV</button>
+  </div>
+
+  <div class="adm-table-wrap">
+    <table>
+      <thead><tr>
+        <th onclick="sort('module')">Type</th>
+        <th onclick="sort('boring')">Boring / Sag</th>
+        <th onclick="sort('kunde')">Kunde</th>
+        <th onclick="sort('dato')">Dato</th>
+        <th onclick="sort('operator')">Operatør</th>
+        <th>Status</th>
+        <th></th>
+      </tr></thead>
+      <tbody id="adm-tbody"></tbody>
+    </table>
+    <div id="adm-empty" class="adm-empty" style="display:none;">Ingen opgaver matcher søgningen.</div>
+  </div>
+</div>
+
+<div id="detail-panel">
+  <div class="det-hdr">
+    <span class="det-hdr-title" id="det-title">—</span>
+    <button class="btn-close" onclick="closeDet()">&#10005;</button>
+  </div>
+  <div class="det-body" id="det-body"></div>
+  <div class="det-actions">
+    <button class="btn-dl" onclick="csvDet()">Download CSV med data</button>
+    <button class="btn-dl" onclick="jsonDet()">Download JSON (alle data)</button>
+  </div>
+</div>
+
+<script>
+const PW = 'awell2024'; // Skift denne adgangskode
+let tasks=[], fil=[], tab='alle', sc='dato', sd=-1, di=null;
+
+const MC={'Pumpeforsøg':'#1169B0','Besigtigelse':'#534AB7','Boreopgave':'#0F6E56',
+          'Service':'#854F0B','Sløjfning':'#993C1D','Tilstandsvurdering':'#3B6D11','Vandprøve':'#993556'};
+
+function login() {
+  const v = document.getElementById('pw').value;
+  if (v === PW) {
+    sessionStorage.setItem('aw_adm','1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+    init();
+  } else {
+    document.getElementById('login-err').textContent = 'Forkert adgangskode — prøv igen.';
+    document.getElementById('pw').value = '';
+    document.getElementById('pw').focus();
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('aw_adm');
+  document.getElementById('admin-app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pw').value = '';
+  document.getElementById('login-err').textContent = '';
+}
+
+async function init() {
+  document.getElementById('adm-date').textContent =
+    new Date().toLocaleDateString('da-DK',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('adm-cnt').textContent = 'Henter data...';
+  tasks = [];
+  const hdr = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY };
+
+  if (SUPABASE_URL !== 'DIN_SUPABASE_URL') {
+    const fetchTable = async (table, mapFn) => {
+      try {
+        const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?select=*&order=oprettet.desc', { headers: hdr });
+        const data = await r.json();
+        if (Array.isArray(data)) data.forEach(row => tasks.push(mapFn(row)));
+      } catch(e) { console.warn('Supabase ' + table + ':', e); }
+    };
+    await fetchTable('forsog', r => ({ module:'Pumpeforsøg', boring:r.boringsnr||'—',
+      kunde:r.kunde||'—', dato:r.dato||r.oprettet?.slice(0,10)||'',
+      operator:r.operator||'—', status:r.status||'Afsluttet', raw:r, source:'sb' }));
+    await fetchTable('besigtigelse', r => ({ module:'Besigtigelse', boring:r.sagsnr||'—',
+      kunde:r.kunde||'—', dato:(r.dato?r.dato.slice(0,10):null)||r.oprettet?.slice(0,10)||'',
+      operator:r.operator||'—', status:r.status||'Afsluttet', raw:r, source:'sb' }));
+    await fetchTable('boreopgave', r => ({ module:'Boreopgave', boring:r.dgu||r.sag||'—',
+      kunde:r.kunde||'—', dato:(r.dato_start?r.dato_start.slice(0,10):null)||r.oprettet?.slice(0,10)||'',
+      operator:r.operator||'—', status:r.status||'Afsluttet', raw:r, source:'sb' }));
+  }
+
+  // Lokale opgaver — undgå dubletter med Supabase-data
+  try {
+    const sbKeys = new Set(tasks.map(t => t.module+'|'+t.boring+'|'+t.dato));
+    const a = JSON.parse(localStorage.getItem('awell_active')||'[]');
+    const c = JSON.parse(localStorage.getItem('awell_completed')||'[]');
+    [...a.map(t=>({...t,status:'Igangværende'})),...c.map(t=>({...t,status:t.status||'Afsluttet'}))].forEach(t => {
+      const k = (t.module||'')+'|'+(t.boring||'')+'|'+(t.dato||'');
+      if (!sbKeys.has(k)) tasks.push({ module:t.module||'—', boring:t.boring||'—',
+        kunde:t.kunde||'—', dato:t.dato||t.afsluttet||'', operator:t.operator||'—',
+        status:t.status, raw:t, source:'local' });
+    });
+  } catch(e) { console.error(e); }
+
+  const mnd = new Date().toISOString().slice(0,7);
+  document.getElementById('s-tot').textContent = tasks.length;
+  document.getElementById('s-pf').textContent  = tasks.filter(t=>t.module==='Pumpeforsøg').length;
+  document.getElementById('s-bg').textContent  = tasks.filter(t=>t.module==='Besigtigelse').length;
+  document.getElementById('s-mnd').textContent = tasks.filter(t=>t.dato&&t.dato.startsWith(mnd)).length;
+  filter();
+}
+
+function fd(d) {
+  if (!d) return '—';
+  try { return new Date(d).toLocaleDateString('da-DK',{day:'numeric',month:'short',year:'numeric'}); }
+  catch { return d; }
+}
+
+function filter() {
+  const s=document.getElementById('f-s').value.toLowerCase();
+  const tp=document.getElementById('f-t').value;
+  const fra=document.getElementById('f-fra').value;
+  const til=document.getElementById('f-til').value;
+  fil = tasks.filter(t=>{
+    if (tab==='pumpeforsog'&&t.module!=='Pumpeforsøg') return false;
+    if (tab==='besigtigelse'&&t.module!=='Besigtigelse') return false;
+    if (tab==='andre'&&['Pumpeforsøg','Besigtigelse'].includes(t.module)) return false;
+    if (tp&&t.module!==tp) return false;
+    if (s&&![t.boring,t.kunde,t.operator].some(v=>(v||'').toLowerCase().includes(s))) return false;
+    if (fra&&t.dato&&t.dato<fra) return false;
+    if (til&&t.dato&&t.dato>til) return false;
+    return true;
+  });
+  doSort();
+}
+
+function clearF() {
+  ['f-s','f-fra','f-til'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-t').value=''; filter();
+}
+
+function setTab(name,btn) {
+  tab=name; document.querySelectorAll('.adm-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); closeDet(); filter();
+}
+
+function sort(col) { sd=sc===col?sd*-1:1; sc=col; doSort(); }
+
+function doSort() {
+  fil.sort((a,b)=>{const va=(a[sc]||'').toLowerCase(),vb=(b[sc]||'').toLowerCase();return va<vb?-sd:va>vb?sd:0;});
+  render();
+}
+
+function render() {
+  const tb=document.getElementById('adm-tbody'), em=document.getElementById('adm-empty');
+  document.getElementById('adm-cnt').textContent=fil.length+' opgave'+(fil.length!==1?'r':'');
+  if (!fil.length) { tb.innerHTML=''; em.style.display='block'; return; }
+  em.style.display='none';
+  tb.innerHTML = fil.map(t=>{
+    const idx=tasks.indexOf(t), c=MC[t.module]||'#666';
+    return `<tr onclick="showDet(${idx})">
+      <td><span class="chip" style="background:${c}20;color:${c};border:1px solid ${c}40">${t.module}</span></td>
+      <td class="td-bold">${t.boring}</td><td>${t.kunde}</td><td>${fd(t.dato)}</td><td>${t.operator}</td>
+      <td><span class="chip ${t.status==='Igangværende'?'chip-active':'chip-done'}">${t.status}</span></td>
+      <td style="color:#ccc;text-align:center;">›</td>
+    </tr>`;
+  }).join('');
+}
+
+function showDet(idx) {
+  di=idx; const t=tasks[idx]; if (!t) return;
+  document.getElementById('det-title').textContent=t.module+' — '+t.boring;
+  const r=t.raw||{}, m=r.meta||{};
+  const rows=[
+    ['Modul',t.module],['Boring / Sag',t.boring],['Kunde',t.kunde],
+    ['Dato',fd(t.dato)],['Afsluttet',fd(r.afsluttet)],['Operatør',t.operator],['Status',t.status],
+    ...(t.module==='Pumpeforsøg'?[
+      ['Forsøgstype',m.forsog_type||'—'],['Rovand (m u. MP)',m.rovand||'—'],
+      ['Bundpejling (m u. MP)',m.bundpejling||'—'],['Antal målinger',(r.readings||[]).length]
+    ]:[]),
+    ...(t.module==='Besigtigelse'?[
+      ['Formål',[m.formal,m.formal_fri].filter(Boolean).join(' – ')||'—'],
+      ['Adresse',m.adresse||'—'],['Anbefaling',m.anbefaling||'—'],
+      ['Antal boringer',(r.boringer||[]).length]
+    ]:[]),
+  ];
+  document.getElementById('det-body').innerHTML=
+    rows.map(([l,v])=>`<div class="sum-row"><span class="sum-lbl">${l}</span><span>${v||'—'}</span></div>`).join('');
+  document.getElementById('detail-panel').classList.add('open');
+}
+
+function closeDet() { document.getElementById('detail-panel').classList.remove('open'); di=null; }
+
+function csvAll() {
+  const h='Type;Boring/Sag;Kunde;Dato;Operatør;Status';
+  const rows=fil.map(t=>[t.module,t.boring,t.kunde,fd(t.dato),t.operator,t.status]
+    .map(v=>'"'+(v||'').replace(/"/g,'""')+'"').join(';'));
+  dl('\uFEFF'+h+'\n'+rows.join('\n'),'awell_opgaver_'+new Date().toISOString().slice(0,10)+'.csv','text/csv');
+}
+
+function csvDet() {
+  const t=tasks[di]; if (!t) return;
+  const r=t.raw||{}, m=r.meta||{};
+  let c='\uFEFF';
+  if (t.module==='Pumpeforsøg') {
+    c+='# PUMPEFORSØG — Awell ApS\n# Boring;'+(m.boringsnr||t.boring)+'\n# Forsøgstype;'+(m.forsog_type||'—')+
+       '\n# Kunde;'+(m.kunde||t.kunde)+'\n# Operatør;'+(m.operator||t.operator)+'\n# Dato;'+fd(t.dato)+
+       '\n# Rovand (m u. MP);'+(m.rovand||'—')+'\n# Bundpejling (m u. MP);'+(m.bundpejling||'—')+
+       '\n# Pumpetype;'+(m.pumpetype||'—')+'\n# Pumpeydelse (m³/h);'+(m.pumpeydelse||'—')+'\n\n';
+    const rd=r.readings||[];
+    if (rd.length) {
+      c+='Nr;Klokkeslæt;Min siden start;Pejling (m u. MP);Sænkning (m);Ydelse (m³/h)\n';
+      rd.forEach(x=>{ c+=[x.nr,x.tid,x.min,
+        typeof x.pejling==='number'?x.pejling.toFixed(3):x.pejling,
+        typeof x.saenkning==='number'?x.saenkning.toFixed(3):x.saenkning,
+        x.ydelse!=null?x.ydelse:''].join(';')+'\n'; });
+    } else c+='# Ingen målinger i denne session\n';
+  } else if (t.module==='Besigtigelse') {
+    c+='# BESIGTIGELSE — Awell ApS\n# Sagsnummer;'+(m.sagsnr||t.boring)+'\n# Kunde;'+(m.kunde||t.kunde)+
+       '\n# Operatør;'+(m.operator||t.operator)+'\n# Dato;'+fd(t.dato)+
+       '\n# Formål;'+([m.formal,m.formal_fri].filter(Boolean).join(' – ')||'—')+
+       '\n# Adresse;'+(m.adresse||'—')+'\n# Anbefaling;'+(m.anbefaling||'—')+'\n\n';
+    const bo=r.boringer||[];
+    if (bo.length) {
+      c+='Boringsnr;Fundet;Type;Konstruktion;Dybde (m);Tilstand;Bemærkninger\n';
+      bo.forEach(b=>{ c+=[b.nr,b.fundet,b.type,b.konstr,b.dybde,b.tilstand,b.note].join(';')+'\n'; });
+    } else c+='# Ingen boringer registreret\n';
+  } else {
+    c+='# '+t.module+'\nFelt;Værdi\nBoring/Sag;'+t.boring+'\nKunde;'+t.kunde+
+       '\nDato;'+fd(t.dato)+'\nOperatør;'+t.operator+'\nStatus;'+t.status+'\n';
+  }
+  const fn=(t.module+' '+t.boring).replace(/[^a-zA-Z0-9]/g,'_').replace(/_+/g,'_')+'.csv';
+  dl(c,fn,'text/csv');
+}
+
+function jsonDet() {
+  const t=tasks[di]; if (!t) return;
+  const fn=(t.module+' '+t.boring).replace(/[^a-zA-Z0-9]/g,'_').replace(/_+/g,'_')+'.json';
+  dl(JSON.stringify(t.raw||t,null,2),fn,'application/json');
+}
+
+function dl(content,filename,type) {
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=filename; a.click();
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  if (sessionStorage.getItem('aw_adm')==='1') {
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-app').style.display='block';
+    init();
+  }
+});
+</script>
+</body>
+</html>

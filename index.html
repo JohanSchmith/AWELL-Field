@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Awell Feltportal</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1169B0" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Awell Felt" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- GLOBAL HEADER -->
+  <div class="app-header">
+    <div class="app-header-left">
+      <button class="btn-back hidden" id="btn-back" onclick="goHome()" aria-label="Tilbage">
+        <i class="ti ti-arrow-left" aria-hidden="true"></i>
+      </button>
+      <img src="logo.jpg" alt="Awell" class="app-logo" />
+      <span class="app-title" id="app-title">Feltportal</span>
+    </div>
+    <div class="app-header-right">
+      <span class="status-badge hidden" id="offline-badge">Offline</span>
+      <span class="app-date" id="app-date"></span>
+    </div>
+  </div>
+
+  <!-- ── FORSIDE ── -->
+  <div id="screen-home" class="screen active">
+    <div class="home-hero">
+      <div class="home-greeting" id="home-greeting">God dag</div>
+      <div class="home-sub">Vælg en opgavetype for at komme i gang</div>
+    </div>
+
+    <div id="active-section" style="display:none;">
+      <div class="home-section-title">Igangværende</div>
+      <div id="active-list" class="task-list"></div>
+    </div>
+
+
+    <div class="home-section-title">Ny opgave</div>
+    <div class="module-grid">
+
+      <button class="module-card mc-blue" onclick="openModule('pumpeforsog')">
+        <div class="mc-icon-wrap"><svg width="52" height="52" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <rect x="26" y="4" width="12" height="40" rx="3" fill="#B5D4F4" stroke="#1169B0" stroke-width="1.5"/>
+  <rect x="28" y="6" width="8" height="36" rx="2" fill="#E6F1FB"/>
+  <rect x="24" y="8" width="16" height="5" rx="2" fill="#1169B0"/>
+  <rect x="24" y="16" width="16" height="3" rx="1" fill="#85B7EB"/>
+  <rect x="24" y="22" width="16" height="3" rx="1" fill="#85B7EB"/>
+  <rect x="24" y="28" width="16" height="3" rx="1" fill="#85B7EB"/>
+  <ellipse cx="32" cy="44" rx="14" ry="5" fill="#378ADD" opacity="0.3"/>
+  <path d="M10 44 Q16 38 22 42 Q28 46 32 40 Q36 34 42 38 Q48 42 54 36" fill="none" stroke="#1169B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="28" y="48" width="8" height="12" rx="2" fill="#0C447C"/>
+  <ellipse cx="32" cy="60" rx="8" ry="3" fill="#042C53" opacity="0.3"/>
+</svg></div>
+        <div class="mc-body">
+          <div class="mc-name">Pumpeforsøg</div>
+          <div class="mc-desc">Trin-, konstant- og recuperationsforsøg</div>
+        </div>
+      </button>
+
+      <button class="module-card mc-teal" onclick="openModule('boreopgave')">
+        <div class="mc-icon-wrap"><svg width="52" height="52" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <rect x="28" y="4" width="8" height="36" rx="2" fill="#1D9E75"/>
+  <rect x="30" y="6" width="4" height="32" rx="1" fill="#9FE1CB"/>
+  <path d="M28 4 L20 16 L28 16 Z" fill="#0F6E56"/>
+  <path d="M36 4 L44 16 L36 16 Z" fill="#0F6E56"/>
+  <rect x="22" y="14" width="20" height="6" rx="2" fill="#085041"/>
+  <rect x="24" y="16" width="16" height="2" rx="1" fill="#1D9E75"/>
+  <rect x="24" y="40" width="16" height="10" rx="3" fill="#085041"/>
+  <rect x="26" y="42" width="12" height="6" rx="2" fill="#0F6E56"/>
+  <rect x="29" y="48" width="6" height="12" rx="2" fill="#0F6E56"/>
+  <rect x="30" y="50" width="4" height="8" rx="1" fill="#5DCAA5"/>
+  <rect x="18" y="50" width="28" height="6" rx="2" fill="#444441"/>
+  <rect x="20" y="52" width="24" height="2" rx="1" fill="#888780"/>
+  <circle cx="24" cy="56" r="3" fill="#2C2C2A"/><circle cx="24" cy="56" r="1.5" fill="#888780"/>
+  <circle cx="40" cy="56" r="3" fill="#2C2C2A"/><circle cx="40" cy="56" r="1.5" fill="#888780"/>
+</svg></div>
+        <div class="mc-body">
+          <div class="mc-name">Boreopgave</div>
+          <div class="mc-desc">Ny boring, boreprofil, filteropsætning</div>
+        </div>
+      </button>
+
+      <button class="module-card mc-blue" onclick="openModule('service')">
+        <div class="mc-icon-wrap"><svg width="52" height="52" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <line x1="12" y1="62" x2="2"  y2="72" stroke="#0C447C" stroke-width="3" stroke-linecap="round"/>
+  <rect x="0"  y="70" width="8" height="3.5" rx="1.5" fill="#185FA5"/>
+  <line x1="20" y1="62" x2="8"  y2="74" stroke="#0C447C" stroke-width="3" stroke-linecap="round"/>
+  <rect x="5"  y="72" width="8" height="3.5" rx="1.5" fill="#185FA5"/>
+  <line x1="52" y1="62" x2="64" y2="72" stroke="#0C447C" stroke-width="3" stroke-linecap="round"/>
+  <rect x="62" y="70" width="8" height="3.5" rx="1.5" fill="#185FA5"/>
+  <line x1="44" y1="62" x2="56" y2="74" stroke="#0C447C" stroke-width="3" stroke-linecap="round"/>
+  <rect x="54" y="72" width="8" height="3.5" rx="1.5" fill="#185FA5"/>
+  <rect x="8" y="56" width="48" height="12" rx="6" fill="#0C447C"/>
+  <rect x="10" y="58" width="44" height="8" rx="4" fill="#185FA5"/>
+  <circle cx="16" cy="62" r="4"   fill="#042C53"/><circle cx="16" cy="62" r="2.2" fill="#378ADD"/>
+  <circle cx="48" cy="62" r="4"   fill="#042C53"/><circle cx="48" cy="62" r="2.2" fill="#378ADD"/>
+  <circle cx="28" cy="62" r="3"   fill="#042C53"/><circle cx="28" cy="62" r="1.6" fill="#378ADD"/>
+  <circle cx="38" cy="62" r="3"   fill="#042C53"/><circle cx="38" cy="62" r="1.6" fill="#378ADD"/>
+  <rect x="12" y="48" width="40" height="10" rx="3" fill="#1169B0"/>
+  <rect x="14" y="50" width="36" height="6"  rx="2" fill="#378ADD"/>
+  <ellipse cx="32" cy="48" rx="9" ry="3"   fill="#0C447C"/>
+  <ellipse cx="32" cy="48" rx="6" ry="1.8" fill="#185FA5"/>
+  <rect x="10" y="44" width="10" height="6" rx="2" fill="#0C447C"/>
+  <rect x="11" y="45" width="8"  height="4" rx="1.5" fill="#185FA5"/>
+  <line x1="30" y1="46" x2="66" y2="8" stroke="#0C447C" stroke-width="5.5" stroke-linecap="round"/>
+  <line x1="30" y1="46" x2="66" y2="8" stroke="#378ADD" stroke-width="3"   stroke-linecap="round"/>
+  <line x1="24" y1="47" x2="66" y2="8" stroke="#85B7EB" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 2"/>
+  <line x1="66" y1="8"  x2="64" y2="26" stroke="#B5D4F4" stroke-width="1.5" stroke-linecap="round"/>
+  <rect x="60" y="26" width="8" height="5" rx="2" fill="#0C447C"/>
+  <path d="M62 31 Q59 37 64 37 Q69 37 66 31" fill="none" stroke="#0C447C" stroke-width="2.2" stroke-linecap="round"/>
+</svg></div>
+        <div class="mc-body">
+          <div class="mc-name">Service</div>
+          <div class="mc-desc">Syring, rensning, kranservice</div>
+        </div>
+      </button>
+
+      <button class="module-card mc-coral" onclick="openModule('sloejfning')">
+        <div class="mc-icon-wrap"><svg width="52" height="52" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+  <rect x="31" y="6" width="10" height="34" rx="3" fill="#D3D1C7"/>
+  <rect x="33" y="8" width="6" height="30" rx="2" fill="#F1EFE8"/>
+  <rect x="28" y="10" width="16" height="5" rx="2" fill="#B4B2A9"/>
+  <rect x="28" y="18" width="16" height="4" rx="1.5" fill="#D3D1C7"/>
+  <rect x="28" y="25" width="16" height="4" rx="1.5" fill="#D3D1C7"/>
+  <rect x="26" y="38" width="20" height="10" rx="3" fill="#5F5E5A"/>
+  <rect x="28" y="40" width="16" height="6" rx="2" fill="#888780"/>
+  <rect x="28" y="46" width="16" height="6" rx="2" fill="#444441"/>
+  <circle cx="36" cy="64" r="6" fill="#2C2C2A"/>
+  <circle cx="36" cy="64" r="3" fill="#5F5E5A"/>
+  <line x1="21" y1="21" x2="51" y2="51" stroke="#A32D2D" stroke-width="4" stroke-linecap="round"/>
+  <line x1="51" y1="21" x2="21" y2="51" stroke="#A32D2D" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="36" cy="36" r="14" fill="none" stroke="#E24B4A" stroke-width="2.5"/>
+</svg></div>
+        <div class="mc-body">
+          <div class="mc-name">Sløjfning</div>
+          <div class="mc-desc">Dokumentation af sløjfede boringer</div>
+        </div>
+      </button>
+
+      <button class="module-card mc-teal" onclick="openModule('besigtigelse')">
+        <div class="mc-icon-wrap"><svg width="52" height="52" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="32" cy="28" r="18" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.5"/>
+  <circle cx="32" cy="28" r="12" fill="none" stroke="#1D9E75" stroke-width="1" stroke-dasharray="3 2"/>
+  <circle cx="32" cy="28" r="5" fill="#0F6E56"/>
+  <circle cx="32" cy="28" r="2.5" fill="#9FE1CB"/>
+  <path d="M32 10 L32 16" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M32 40 L32 46" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M14 28 L20 28" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M44 28 L50 28" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M20 50 Q26 44 32 46 Q38 44 44 50" fill="none" stroke="#1169B0" stroke-width="2" stroke-linecap="round"/>
+  <path d="M18 52 Q32 42 46 52" fill="none" stroke="#85B7EB" stroke-width="1.5" opacity="0.6" stroke-linecap="round"/>
+  <rect x="16" y="52" width="32" height="8" rx="2" fill="#B5D4F4" opacity="0.4"/>
+</svg></div>
+        <div class="mc-body">
+          <div class="mc-name">Besigtigelse</div>
+          <div class="mc-desc">Lokationsbesøg, noter og foto</div>
+        </div>
+      </button>
+
+      <button class="module-card mc-green" onclick="openModule('tilstand')">
+        <div class="mc-icon-wrap"><svg width="52" height="52" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <rect x="12" y="8" width="40" height="48" rx="5" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1.5"/>
+  <rect x="16" y="12" width="32" height="40" rx="3" fill="#fff"/>
+  <rect x="20" y="18" width="24" height="3" rx="1" fill="#C0DD97"/>
+  <rect x="20" y="24" width="24" height="3" rx="1" fill="#C0DD97"/>
+  <rect x="20" y="30" width="16" height="3" rx="1" fill="#C0DD97"/>
+  <path d="M22 42 L27 48 L40 36" stroke="#3B6D11" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="26" y="4" width="12" height="8" rx="3" fill="#3B6D11"/>
+  <rect x="28" y="6" width="8" height="4" rx="1.5" fill="#639922"/>
+</svg></div>
+        <div class="mc-body">
+          <div class="mc-name">Tilstandsvurdering</div>
+          <div class="mc-desc">Vurdering af boring og udstyr</div>
+        </div>
+      </button>
+
+      <button class="module-card mc-blue" onclick="openModule('vandproeve')">
+        <div class="mc-icon-wrap"><svg width="52" height="52" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+  <rect x="30" y="6" width="12" height="7" rx="3" fill="#888780" stroke="#5F5E5A" stroke-width="1"/>
+  <rect x="28" y="11" width="16" height="4" rx="1.5" fill="#5F5E5A"/>
+  <path d="M27 15 L25 56 Q25 66 36 66 Q47 66 47 56 L45 15 Z" fill="none" stroke="#888780" stroke-width="1.5"/>
+  <clipPath id="btl"><path d="M27 15 L25 56 Q25 66 36 66 Q47 66 47 56 L45 15 Z"/></clipPath>
+  <rect x="24" y="40" width="24" height="28" fill="#378ADD" opacity="0.85" clip-path="url(#btl)"/>
+  <path d="M24 40 Q30 44 36 40 Q42 36 48 40" fill="none" stroke="#85B7EB" stroke-width="1.2" clip-path="url(#btl)"/>
+  <path d="M27 15 L25 56 Q25 66 36 66 Q47 66 47 56 L45 15 Z" fill="none" stroke="#888780" stroke-width="1.5"/>
+  <path d="M31 22 Q35 27 31 32 Q35 37 31 42" fill="none" stroke="#B4B2A9" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+  <rect x="27" y="13" width="18" height="2" rx="1" fill="#888780" opacity="0.5"/>
+</svg></div>
+        <div class="mc-body">
+          <div class="mc-name">Vandprøve</div>
+          <div class="mc-desc">Prøvetagning og parametre</div>
+        </div>
+      </button>
+
+    </div>
+
+    <div id="completed-section" style="display:none;margin-top:1.5rem;">
+      <div class="home-section-title">Seneste afsluttede</div>
+      <div id="completed-list" class="task-list"></div>
+    </div>
+    <div class="admin-link-wrap">
+      <a href="/admin.html" class="admin-link-btn"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Admin-oversigt</a>
+    </div>
+  </div>
+
+  <!-- ── OPGAVE DETALJE ── -->
+  <div id="screen-opgave" class="screen">
+    <div class="stamdata-bar">
+      <button class="stamdata-bar-back" onclick="goHome()" aria-label="Tilbage"><i class="ti ti-arrow-left" aria-hidden="true"></i> Forside</button>
+      <div class="stamdata-bar-info">
+        <span id="opg-title">Opgave</span>
+        <span class="bar-sep">·</span>
+        <span class="badge-status" id="opg-badge">Afsluttet</span>
+      </div>
+    </div>
+    <div style="padding:1.25rem;">
+      <div class="sum-box" id="opg-detaljer"></div>
+      <div style="margin-top:1rem;">
+        <button class="btn-sec" onclick="goHome()"><i class="ti ti-arrow-left" aria-hidden="true"></i> Tilbage til forside</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PUMPEFORSØG ── -->
+  <div id="screen-pumpeforsog" class="screen">
+    <div class="stamdata-bar">
+      <button class="stamdata-bar-back" onclick="goHome()" aria-label="Tilbage til forside"><i class="ti ti-arrow-left" aria-hidden="true"></i> Forside</button>
+      <div class="stamdata-bar-info">
+        <span id="pf-bar-boring">—</span>
+        <span class="bar-sep">·</span>
+        <span id="pf-bar-kunde">—</span>
+        <span class="bar-sep">·</span>
+        <span id="pf-bar-type">—</span>
+        <span class="bar-sep">·</span>
+        <span class="badge-status" id="pf-status">Ikke startet</span>
+      </div>
+    </div>
+    <nav class="tab-nav">
+      <button class="active" onclick="pfTab('info',this)"><i class="ti ti-info-circle" aria-hidden="true"></i> Info</button>
+      <button onclick="pfTab('maaling',this)"><i class="ti ti-clock" aria-hidden="true"></i> Målinger</button>
+      <button onclick="pfTab('graf',this)"><i class="ti ti-chart-line" aria-hidden="true"></i> Graf</button>
+      <button onclick="pfTab('eksport',this)"><i class="ti ti-download" aria-hidden="true"></i> Eksport</button>
+    </nav>
+
+    <div id="pf-info" class="tab active">
+      <div class="sec-lbl">Boring & lokation</div>
+      <div class="f2"><div class="fg"><label>Boringsnummer</label><input type="text" id="pf-boringsnr" placeholder="DGU 123.456" oninput="pfUpdateBar()" /></div><div class="fg"><label>Adresse / lokalitet</label><input type="text" id="pf-adresse" placeholder="Markvej 12, Randers" /></div></div>
+      <div class="f2"><div class="fg"><label>Kunde</label><input type="text" id="pf-kunde" placeholder="Kundenavn" oninput="pfUpdateBar()" /></div><div class="fg"><label>Operatør</label><input type="text" id="pf-operator" placeholder="Dit navn" /></div></div>
+      <div class="f2">
+        <div class="fg"><label>Forsøgstype</label><select id="pf-type" oninput="pfUpdateBar()"><option value="">— vælg —</option><option>Trinvis forsøg</option><option>Konstantforsøg</option><option>Recuperationsforsøg</option><option>Kortvarigt forsøg</option><option>Andet</option></select></div>
+        <div class="fg"><label>Præcisering</label><input type="text" id="pf-type-fri" placeholder="Uddybning" /></div>
+      </div>
+      <div class="sec-lbl">Målepunkt (m.o.t.)</div>
+      <div class="f3">
+        <div class="fg"><label>MP-kote (m.o.t.)</label><input type="number" id="pf-mp-kote" step="0.001" placeholder="45.230" /></div>
+        <div class="fg"><label>Rørlængde (m)</label><input type="number" id="pf-rorlangde" step="0.001" placeholder="1.020" /></div>
+        <div class="fg"><label>MP-betegnelse</label><input type="text" id="pf-pp-bet" placeholder="MP1" /></div>
+      </div>
+      <div class="sec-lbl">Vandstande & dybder</div>
+      <div class="f3">
+        <div class="fg"><label>Rovand (m u. MP)</label><input type="number" id="pf-rovand" step="0.001" placeholder="12.450" /><div class="fhint">statisk vandstand</div></div>
+        <div class="fg"><label>Bundpejling (m u. MP)</label><input type="number" id="pf-bundpejling" step="0.001" placeholder="45.000" /><div class="fhint">totaldybde</div></div>
+        <div class="fg"><label>Pumpesætningsdybde (m)</label><input type="number" id="pf-pumpedybde" step="0.1" placeholder="30.0" /></div>
+      </div>
+      <div class="sec-lbl">Pumpe</div>
+      <div class="f2"><div class="fg"><label>Pumpetype</label><input type="text" id="pf-pumpetype" placeholder="Grundfos SP 5A" /></div><div class="fg"><label>Pumpeydelse (m³/h)</label><input type="number" id="pf-pumpeydelse" step="0.01" placeholder="5.50" /></div></div>
+      <div class="fg"><label>Bemærkninger</label><textarea id="pf-bemærkning" placeholder="Lokation, vejr, noter mm."></textarea></div>
+      <button class="btn-primary" onclick="pfStart()"><i class="ti ti-player-play" aria-hidden="true"></i> Start pumpeforsøg</button>
+    </div>
+
+    <div id="pf-maaling" class="tab">
+      <div class="timer-row">
+        <div>
+          <div class="sec-lbl" style="margin:0 0 2px;">Tid siden start</div>
+          <div class="timer" id="pf-timer">00:00:00</div>
+        </div>
+        <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+          <div>
+            <div class="sec-lbl" style="margin:0 0 4px;">Aktuel ydelse</div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="number" id="pf-live-ydelse" step="0.01" style="width:90px;" placeholder="m³/h" />
+              <span class="muted">m³/h</span>
+            </div>
+          </div>
+          <button class="btn-stop" id="pf-stop-btn" onclick="pfStop()" style="display:none;">
+            <i class="ti ti-player-stop" aria-hidden="true"></i> Stop forsøg
+          </button>
+        </div>
+      </div>
+      <div class="sec-lbl">Tilføj måling</div>
+      <div class="add-row">
+        <div><label class="slbl">Kl. (auto)</label><input type="text" id="pf-ny-tid" placeholder="HH:MM:SS" /></div>
+        <div><label class="slbl">Min siden start</label><input type="number" id="pf-ny-min" step="0.5" placeholder="auto" /></div>
+        <div><label class="slbl">Pejling u. MP (m)</label><input type="number" id="pf-ny-pejling" step="0.001" placeholder="0.000" /></div>
+        <div><label class="slbl">Ydelse (m³/h)</label><input type="number" id="pf-ny-ydelse" step="0.01" /></div>
+        <button class="btn-add" onclick="pfAddReading()" aria-label="Tilføj">+</button>
+      </div>
+      <div style="overflow-x:auto;margin-top:1rem;">
+        <table class="dtable"><colgroup><col style="width:28px"><col style="width:68px"><col style="width:50px"><col style="width:105px"><col style="width:93px"><col style="width:85px"><col style="width:32px"></colgroup>
+          <thead><tr><th>#</th><th>Kl.</th><th>Min</th><th>Pejling (m u. MP)</th><th>Sænkning (m)</th><th>Ydelse (m³/h)</th><th></th></tr></thead>
+          <tbody id="pf-tbody"><tr><td colspan="7" class="empty">Ingen målinger endnu.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="pf-graf" class="tab">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="slbl">Maks. sænkning</div><div class="stat-val" id="pf-st-s">— m</div></div>
+        <div class="stat-card"><div class="slbl">Antal målinger</div><div class="stat-val" id="pf-st-n">0</div></div>
+        <div class="stat-card"><div class="slbl">Varighed</div><div class="stat-val" id="pf-st-v">—</div></div>
+      </div>
+      <div class="chart-wrap"><canvas id="pf-chart" role="img" aria-label="Sænkningskurve under pumpeforsøg"></canvas></div>
+      <div class="chart-lbl">Tid siden pumpestart (min) → Sænkning (m)</div>
+    </div>
+
+    <div id="pf-eksport" class="tab">
+      <div class="sec-lbl">Oversigt</div>
+      <div class="sum-box">
+        <div class="sum-row"><span class="sum-lbl">Boring</span><span id="pf-ex-boring">—</span></div>
+        <div class="sum-row"><span class="sum-lbl">Forsøgstype</span><span id="pf-ex-type">—</span></div>
+        <div class="sum-row"><span class="sum-lbl">Kunde</span><span id="pf-ex-kunde">—</span></div>
+        <div class="sum-row"><span class="sum-lbl">Dato</span><span id="pf-ex-dato">—</span></div>
+        <div class="sum-row"><span class="sum-lbl">Operatør</span><span id="pf-ex-op">—</span></div>
+        <div class="sum-row"><span class="sum-lbl">Rovand (m u. MP)</span><span id="pf-ex-rovand">—</span></div>
+        <div class="sum-row"><span class="sum-lbl">Bundpejling (m u. MP)</span><span id="pf-ex-bund">—</span></div>
+        <div class="sum-row"><span class="sum-lbl">Antal målinger</span><span id="pf-ex-antal">0</span></div>
+        <div class="sum-row"><span class="sum-lbl">Maks. sænkning</span><span id="pf-ex-saenk">—</span></div>
+      </div>
+      <div class="sec-lbl">Godkendelse</div>
+      <div class="sign-box">
+        <div class="sign-row">
+          <div><div class="slbl" style="margin-bottom:6px;">Udført af</div><input type="text" id="pf-sign-name" placeholder="Navn" style="margin-bottom:6px;" /><input type="text" id="pf-sign-date" placeholder="Dato" /></div>
+          <div><div class="slbl" style="margin-bottom:6px;">Godkendt af</div><input type="text" id="pf-approve-name" placeholder="Navn" style="margin-bottom:6px;" /><input type="text" id="pf-approve-date" placeholder="Dato" /></div>
+        </div>
+        <div class="fg" style="margin-top:.75rem;margin-bottom:0;"><label>Afsluttende kommentarer</label><textarea id="pf-final-note" placeholder="Vurdering, anbefalinger mm." style="min-height:48px;"></textarea></div>
+      </div>
+      <div class="sec-lbl">Download</div>
+      <div class="export-row">
+        <button class="export-btn" onclick="pfCSV()"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i> CSV</button>
+        <button class="export-btn" onclick="pfJSON()"><i class="ti ti-braces" aria-hidden="true"></i> JSON</button>
+        <button class="export-btn" id="pf-pdf-btn" onclick="pfPDF()"><i class="ti ti-file-text" aria-hidden="true"></i> PDF</button>
+      </div>
+      <div id="pf-pdf-status" class="pdf-status"></div>
+      <div class="btn-row" style="margin-top:1rem;">
+        <button class="btn-sec" onclick="pfAfslut()"><i class="ti ti-check" aria-hidden="true"></i> Afslut opgave</button>
+        <button class="btn-sec" onclick="pfNyt()"><i class="ti ti-refresh" aria-hidden="true"></i> Nyt forsøg</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PLACEHOLDER SCREENS ── -->
+  <div id="screen-boreopgave" class="screen">
+    <div class="module-back-bar">
+      <button class="back-btn" onclick="goHome()" aria-label="Tilbage til forside"><i class="ti ti-arrow-left" aria-hidden="true"></i> Forside</button>
+      <span class="module-back-title">Boreopgave</span>
+    </div>
+    <div class="placeholder"><i class="ti ti-drill ph-icon" aria-hidden="true"></i><div class="ph-title">Boreopgave</div><div class="ph-desc">Under udvikling — kommer snart</div><button class="btn-primary" style="max-width:180px;" onclick="goHome()">Tilbage til forside</button></div></div>
+  <div id="screen-service" class="screen">
+    <div class="module-back-bar">
+      <button class="back-btn" onclick="goHome()" aria-label="Tilbage til forside"><i class="ti ti-arrow-left" aria-hidden="true"></i> Forside</button>
+      <span class="module-back-title">Service</span>
+    </div>
+    <div class="placeholder"><i class="ti ti-tool ph-icon" aria-hidden="true"></i><div class="ph-title">Service</div><div class="ph-desc">Under udvikling — kommer snart</div><button class="btn-primary" style="max-width:180px;" onclick="goHome()">Tilbage til forside</button></div></div>
+  <div id="screen-sloejfning" class="screen">
+    <div class="module-back-bar">
+      <button class="back-btn" onclick="goHome()" aria-label="Tilbage til forside"><i class="ti ti-arrow-left" aria-hidden="true"></i> Forside</button>
+      <span class="module-back-title">Sløjfning</span>
+    </div>
+    <div class="placeholder"><i class="ti ti-plug-x ph-icon" aria-hidden="true"></i><div class="ph-title">Sløjfning</div><div class="ph-desc">Under udvikling — kommer snart</div><button class="btn-primary" style="max-width:180px;" onclick="goHome()">Tilbage til forside</button></div></div>
+  <!-- ── BESIGTIGELSE ── -->
+  <div id="screen-besigtigelse" class="screen">
+    <div class="stamdata-bar">
+      <button class="stamdata-bar-back" onclick="goHome()" aria-label="Tilbage til forside"><i class="ti ti-arrow-left" aria-hidden="true"></i> Forside</button>
+      <div class="stamdata-bar-info">
+        <span id="bg-bar-boring">—</span>
+        <span class="bar-sep">·</span>
+        <span id="bg-bar-kunde">—</span>
+        <span class="bar-sep">·</span>
+        <span class="badge-status going" id="bg-status">I gang</span>
+      </div>
+    </div>
+    <nav class="tab-nav">
+      <button class="active" onclick="bgTab('info',this)"><i class="ti ti-info-circle" aria-hidden="true"></i> Info</button>
+      <button onclick="bgTab('lokation',this)"><i class="ti ti-map-pin" aria-hidden="true"></i> Lokation</button>
+      <button onclick="bgTab('boringer',this)"><i class="ti ti-list" aria-hidden="true"></i> Boringer</button>
+      <button onclick="bgTab('noter',this)"><i class="ti ti-notes" aria-hidden="true"></i> Noter</button>
+      <button onclick="bgTab('eksport',this)"><i class="ti ti-download" aria-hidden="true"></i> Eksport</button>
+    </nav>
+
+    <!-- INFO TAB -->
+    <div id="bg-info" class="tab active">
+      <div class="sec-lbl">Opgave</div>
+      <div class="f2">
+        <div class="fg"><label>Sagsnummer</label><input type="text" id="bg-sagsnr" placeholder="AWL-2024-001" oninput="bgUpdateBar()" /></div>
+        <div class="fg"><label>Kunde</label><input type="text" id="bg-kunde" placeholder="Kundenavn" oninput="bgUpdateBar()" /></div>
+      </div>
+      <div class="f2">
+        <div class="fg"><label>Operatør</label><input type="text" id="bg-operator" placeholder="Dit navn" /></div>
+        <div class="fg"><label>Dato</label><input type="date" id="bg-dato" /></div>
+      </div>
+      <div class="fg"><label>Formål med besigtigelse</label>
+        <select id="bg-formal">
+          <option value="">— vælg —</option>
+          <option>Forudgående besigtigelse (ny boring)</option>
+          <option>Tilstandsbesigtigelse (eksisterende boring)</option>
+          <option>Skadesvurdering</option>
+          <option>Myndighedsbesigtigelse</option>
+          <option>Andet</option>
+        </select>
+      </div>
+      <div class="fg"><label>Præcisering af formål</label><input type="text" id="bg-formal-fri" placeholder="Uddybning" /></div>
+
+      <div class="sec-lbl">Rekvirent</div>
+      <div class="f2">
+        <div class="fg"><label>Kontaktperson</label><input type="text" id="bg-kontakt" placeholder="Navn" /></div>
+        <div class="fg"><label>Telefon</label><input type="tel" id="bg-tlf" placeholder="+45 xx xx xx xx" /></div>
+      </div>
+      <div class="fg"><label>E-mail</label><input type="email" id="bg-email" placeholder="kontakt@firma.dk" /></div>
+
+      <div class="sec-lbl">Tilstedeværende</div>
+      <div class="fg"><label>Hvem var til stede</label><textarea id="bg-tilstede" placeholder="Navne og roller på tilstedeværende personer"></textarea></div>
+
+      <div class="btn-row" style="margin-top:.5rem;">
+        <button class="btn-primary" onclick="bgGoNext('lokation')">Videre til lokation <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+      </div>
+    </div>
+
+    <!-- LOKATION TAB -->
+    <div id="bg-lokation" class="tab">
+      <div class="sec-lbl">Adresse & lokation</div>
+      <div class="fg"><label>Adresse</label><input type="text" id="bg-adresse" placeholder="Markvej 12, 8900 Randers" /></div>
+      <div class="f2">
+        <div class="fg"><label>Matrikelnummer</label><input type="text" id="bg-matr" placeholder="12a, Randers" /></div>
+        <div class="fg"><label>Ejendomstype</label>
+          <select id="bg-ejd-type">
+            <option value="">— vælg —</option>
+            <option>Enfamiliehus</option>
+            <option>Landbrug</option>
+            <option>Erhverv</option>
+            <option>Offentlig institution</option>
+            <option>Ubebygget areal</option>
+            <option>Andet</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sec-lbl">GPS-koordinater</div>
+      <div class="f2">
+        <div class="fg"><label>Breddegrad</label><input type="number" id="bg-lat" step="0.000001" placeholder="56.123456" /></div>
+        <div class="fg"><label>Længdegrad</label><input type="number" id="bg-lng" step="0.000001" placeholder="10.123456" /></div>
+      </div>
+      <button class="btn-sec" style="width:100%;margin-bottom:1rem;" onclick="bgGetGPS()"><i class="ti ti-current-location" aria-hidden="true"></i> Hent GPS-position</button>
+      <div id="bg-gps-status" class="pdf-status"></div>
+
+      <div class="sec-lbl">Adgangsforhold</div>
+      <div class="fg">
+        <label>Adgang til lokation</label>
+        <select id="bg-adgang">
+          <option value="">— vælg —</option>
+          <option>Fri adgang</option>
+          <option>Nøgle/kode påkrævet</option>
+          <option>Aftale med ejer påkrævet</option>
+          <option>Begrænset adgang</option>
+        </select>
+      </div>
+      <div class="fg"><label>Adgangsnoter</label><textarea id="bg-adgang-note" placeholder="Kode, kontaktperson, særlige hensyn mm."></textarea></div>
+
+      <div class="sec-lbl">Terræn & omgivelser</div>
+      <div class="f2">
+        <div class="fg"><label>Terræntype</label>
+          <select id="bg-terrain">
+            <option value="">— vælg —</option>
+            <option>Fladt</option>
+            <option>Skrånende</option>
+            <option>Kuperet</option>
+          </select>
+        </div>
+        <div class="fg"><label>Arealanvendelse</label>
+          <select id="bg-areal">
+            <option value="">— vælg —</option>
+            <option>Have/park</option>
+            <option>Landbrugsjord</option>
+            <option>Skov</option>
+            <option>Befæstet areal</option>
+            <option>Andet</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label>Bemærkninger om lokation</label><textarea id="bg-lok-note" placeholder="Evt. observationer om terræn, nærliggende forureningskilder, drænforhold mm."></textarea></div>
+      <button class="btn-primary" style="margin-top:.5rem;" onclick="bgGoNext('boringer')">Videre til boringer <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+    </div>
+
+    <!-- BORINGER TAB -->
+    <div id="bg-boringer" class="tab">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">
+        <div class="sec-lbl" style="margin:0;">Registrerede boringer</div>
+        <button class="btn-sec" onclick="bgAddBoring()" style="padding:6px 12px;font-size:13px;"><i class="ti ti-plus" aria-hidden="true"></i> Tilføj boring</button>
+      </div>
+      <div id="bg-boringer-list">
+        <div class="empty-card">Ingen boringer tilføjet endnu.<br/>Tryk "Tilføj boring" for at registrere.</div>
+      </div>
+
+      <!-- Tilføj boring formular (skjult som standard) -->
+      <div id="bg-boring-form" class="boring-form hidden">
+        <div class="sec-lbl">Ny boring</div>
+        <div class="f2">
+          <div class="fg"><label>Boringsnummer</label><input type="text" id="bg-b-nr" placeholder="DGU 123.456" /></div>
+          <div class="fg"><label>Boring fundet</label>
+            <select id="bg-b-fundet">
+              <option value="">— vælg —</option>
+              <option>Ja — tilgængelig</option>
+              <option>Ja — ikke tilgængelig</option>
+              <option>Ikke fundet</option>
+            </select>
+          </div>
+        </div>
+        <div class="f2">
+          <div class="fg"><label>Boringtype</label>
+            <select id="bg-b-type">
+              <option value="">— vælg —</option>
+              <option>Indvindingsboring</option>
+              <option>Moniteringsboring</option>
+              <option>Afværgeboring</option>
+              <option>Ukendt</option>
+            </select>
+          </div>
+          <div class="fg"><label>Synlig konstruktion</label>
+            <select id="bg-b-konstr">
+              <option value="">— vælg —</option>
+              <option>Brøndring</option>
+              <option>Betonbrønd</option>
+              <option>Rør i terræn</option>
+              <option>Overdækket</option>
+              <option>Ingen / ikke synlig</option>
+            </select>
+          </div>
+        </div>
+        <div class="f2">
+          <div class="fg"><label>Estimeret dybde (m)</label><input type="number" id="bg-b-dybde" step="0.5" placeholder="—" /></div>
+          <div class="fg"><label>Tilstand</label>
+            <select id="bg-b-tilstand">
+              <option value="">— vælg —</option>
+              <option>God</option>
+              <option>Acceptabel</option>
+              <option>Dårlig</option>
+              <option>Kritisk</option>
+              <option>Ukendt</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label>Bemærkninger til boring</label><textarea id="bg-b-note" placeholder="Observationer, skader, evt. anbefaling mm."></textarea></div>
+        <div class="btn-row">
+          <button class="btn-primary" onclick="bgSaveBoring()"><i class="ti ti-check" aria-hidden="true"></i> Gem boring</button>
+          <button class="btn-sec" onclick="bgCancelBoring()">Annuller</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTER TAB -->
+    <div id="bg-noter" class="tab">
+      <div class="sec-lbl">Observationer & noter</div>
+      <div class="fg"><label>Generelle observationer</label><textarea id="bg-obs" placeholder="Beskriv hvad der blev observeret under besigtigelsen..." style="min-height:100px;"></textarea></div>
+
+      <div class="sec-lbl">Vand & geologi</div>
+      <div class="f2">
+        <div class="fg"><label>Synligt grundvand</label>
+          <select id="bg-grundvand">
+            <option value="">— vælg —</option>
+            <option>Ikke observeret</option>
+            <option>Observeret (lavt)</option>
+            <option>Observeret (normalt)</option>
+            <option>Observeret (højt)</option>
+          </select>
+        </div>
+        <div class="fg"><label>Jordbundstype (overflade)</label>
+          <select id="bg-jord">
+            <option value="">— vælg —</option>
+            <option>Sand</option>
+            <option>Grus</option>
+            <option>Ler</option>
+            <option>Moræneler</option>
+            <option>Kalk</option>
+            <option>Blandet</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label>Hydrologiske bemærkninger</label><textarea id="bg-hydro" placeholder="Drænforhold, vandløb, søer, overfladeafstrømning mm."></textarea></div>
+
+      <div class="sec-lbl">Potentielle forureningskilder</div>
+      <div class="fg"><label>Observerede risikofaktorer</label>
+        <div class="checkbox-group" id="bg-risiko-group">
+          <label class="check-item"><input type="checkbox" value="Landbrug" /> Landbrug / gødning</label>
+          <label class="check-item"><input type="checkbox" value="Industri" /> Industri / erhverv</label>
+          <label class="check-item"><input type="checkbox" value="Trafik" /> Trafik / veje</label>
+          <label class="check-item"><input type="checkbox" value="Olietank" /> Olietank</label>
+          <label class="check-item"><input type="checkbox" value="Losseplads" /> Losseplads / depot</label>
+          <label class="check-item"><input type="checkbox" value="Ingen" /> Ingen observerede</label>
+        </div>
+      </div>
+      <div class="fg"><label>Uddybning</label><textarea id="bg-risiko-note" placeholder="Beskriv observerede risikofaktorer nærmere"></textarea></div>
+
+      <div class="sec-lbl">Anbefaling</div>
+      <div class="fg"><label>Samlet anbefaling</label>
+        <select id="bg-anbefaling">
+          <option value="">— vælg —</option>
+          <option>Egnet til boring — ingen begrænsninger</option>
+          <option>Egnet til boring — med forbehold</option>
+          <option>Kræver yderligere undersøgelse</option>
+          <option>Ikke egnet — anbefaler alternativ placering</option>
+          <option>Ikke egnet — boring frarådes</option>
+        </select>
+      </div>
+      <div class="fg"><label>Begrundelse for anbefaling</label><textarea id="bg-anbefaling-note" placeholder="Uddyb anbefalingen..." style="min-height:80px;"></textarea></div>
+      <button class="btn-primary" style="margin-top:.5rem;" onclick="bgGoNext('eksport')">Videre til eksport <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+    </div>
+
+    <!-- EKSPORT TAB -->
+    <div id="bg-eksport" class="tab">
+      <div class="sec-lbl">Oversigt</div>
+      <div class="sum-box">
+        <div class="sum-row"><span class="sum-lbl">Sagsnummer</span><span id="bg-ex-sag">—</span></div>
+        <div class="sum-row"><span class="sum-lbl">Kunde</span><span id="bg-ex-kunde">—</span></div>
+        <div class="sum-row"><span class="sum-lbl">Adresse</span><span id="bg-ex-adr">—</span></div>
+        <div class="sum-row"><span class="sum-lbl">Dato</span><span id="bg-ex-dato">—</span></div>
+        <div class="sum-row"><span class="sum-lbl">Operatør</span><span id="bg-ex-op">—</span></div>
+        <div class="sum-row"><span class="sum-lbl">Formål</span><span id="bg-ex-formal">—</span></div>
+        <div class="sum-row"><span class="sum-lbl">Registrerede boringer</span><span id="bg-ex-boringer">0</span></div>
+        <div class="sum-row"><span class="sum-lbl">Anbefaling</span><span id="bg-ex-anbefaling">—</span></div>
+      </div>
+
+      <div class="sec-lbl">Godkendelse</div>
+      <div class="sign-box">
+        <div class="sign-row">
+          <div><div class="slbl" style="margin-bottom:6px;">Udført af</div><input type="text" id="bg-sign-name" placeholder="Navn" style="margin-bottom:6px;" /><input type="text" id="bg-sign-date" placeholder="Dato" /></div>
+          <div><div class="slbl" style="margin-bottom:6px;">Godkendt af</div><input type="text" id="bg-approve-name" placeholder="Navn" style="margin-bottom:6px;" /><input type="text" id="bg-approve-date" placeholder="Dato" /></div>
+        </div>
+        <div class="fg" style="margin-top:.75rem;margin-bottom:0;"><label>Afsluttende kommentarer</label><textarea id="bg-final-note" placeholder="Yderligere bemærkninger mm." style="min-height:48px;"></textarea></div>
+      </div>
+
+      <div class="sec-lbl">Download</div>
+      <div class="export-row">
+        <button class="export-btn" onclick="bgJSON()"><i class="ti ti-braces" aria-hidden="true"></i> JSON</button>
+        <button class="export-btn" id="bg-pdf-btn" onclick="bgPDF()"><i class="ti ti-file-text" aria-hidden="true"></i> PDF-rapport</button>
+      </div>
+      <div id="bg-pdf-status" class="pdf-status"></div>
+      <div class="btn-row" style="margin-top:1rem;">
+        <button class="btn-sec" onclick="bgAfslut()"><i class="ti ti-check" aria-hidden="true"></i> Afslut besigtigelse</button>
+        <button class="btn-sec" onclick="bgNyt()"><i class="ti ti-refresh" aria-hidden="true"></i> Ny besigtigelse</button>
+      </div>
+    </div>
+  </div>
+  <div id="screen-tilstand" class="screen">
+    <div class="module-back-bar">
+      <button class="back-btn" onclick="goHome()" aria-label="Tilbage til forside"><i class="ti ti-arrow-left" aria-hidden="true"></i> Forside</button>
+      <span class="module-back-title">Tilstandsvurdering</span>
+    </div>
+    <div class="placeholder"><i class="ti ti-clipboard-check ph-icon" aria-hidden="true"></i><div class="ph-title">Tilstandsvurdering</div><div class="ph-desc">Under udvikling — kommer snart</div><button class="btn-primary" style="max-width:180px;" onclick="goHome()">Tilbage til forside</button></div></div>
+  <div id="screen-vandproeve" class="screen">
+    <div class="module-back-bar">
+      <button class="back-btn" onclick="goHome()" aria-label="Tilbage til forside"><i class="ti ti-arrow-left" aria-hidden="true"></i> Forside</button>
+      <span class="module-back-title">Vandprøve</span>
+    </div>
+    <div class="placeholder"><i class="ti ti-flask ph-icon" aria-hidden="true"></i><div class="ph-title">Vandprøve</div><div class="ph-desc">Under udvikling — kommer snart</div><button class="btn-primary" style="max-width:180px;" onclick="goHome()">Tilbage til forside</button></div></div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="portal.js"></script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>
