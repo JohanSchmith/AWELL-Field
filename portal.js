@@ -1,6 +1,6 @@
 // ── Supabase config ────────────────────────────────────────────────────────
-const SUPABASE_URL = 'DIN_SUPABASE_URL';
-const SUPABASE_KEY = 'DIN_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://neyyrvgmcbglvgvjksnq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5leXlydmdtY2JnbHZndmprc25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzg2ODksImV4cCI6MjA5MzcxNDY4OX0.A_9cz3St00kIa7g_8y4tsKmIAb2W3RlWwlid6J4ztDI';
 let sb = null;
 try {
   if (SUPABASE_URL !== 'DIN_SUPABASE_URL' && window.supabase) {
